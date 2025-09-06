@@ -1,0 +1,5 @@
+/* 搜索页独有样式 */
+.search-results-page .page-title {
+    margin-bottom: 16px;
+    color: var(--primary-color);
+}

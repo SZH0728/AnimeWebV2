@@ -1,0 +1,97 @@
+:root {
+    --primary-color: #1e88e5;
+    --primary-dark: #1565c0;
+    --secondary-color: #64b5f6;
+    --background-color: #f5f9ff;
+    --text-color: #333;
+    --light-text: #666;
+    --border-color: #ddd;
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Reset & base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.main-header {
+    background-color: #fff;
+    box-shadow: var(--card-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.site-title {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.github-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.github-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Main content wrapper */
+.main-content {
+    padding: 30px 0;
+}
+
+/* Utilities */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: var(--light-text);
+    font-style: italic;
+}
+
+/* Responsive base */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .main-header .container {
+        padding: 15px;
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+}

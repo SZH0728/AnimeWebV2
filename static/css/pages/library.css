@@ -1,0 +1,12 @@
+/* 动漫库页独有样式 */
+.anime-library-page .filter-section {
+    position: sticky;
+    top: 70px;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .anime-library-page .filter-section {
+        position: static;
+    }
+}
