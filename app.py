@@ -15,6 +15,10 @@ from service import QueryService, PaginationService
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,  # 每次使用连接前先ping一下，检查连接是否有效
+    'echo': False,  # 输出 SQL
+}
 
 DB.init_app(app)
 

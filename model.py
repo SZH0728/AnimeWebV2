@@ -1,11 +1,6 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-# -*- coding:utf-8 -*-
-# AUTHOR: Sun
-
-from dataclasses import dataclass
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import YEAR, TINYINT
 

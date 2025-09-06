@@ -1,4 +1,4 @@
-# docker build -t anime_web:1.0.0 .
+# docker build -t anime_web:verson .
 # docker save -o anime_web.tar anime_web
 # docker load -i anime_web.tar
 FROM python:3.13-alpine
