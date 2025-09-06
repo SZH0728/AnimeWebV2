@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_anime_list, render_pagination %}
+
+{% block title %}AnimeScrapy - 搜索结果{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/search.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="search-results-page">
+        <h2 class="page-title">搜索结果: "{{ query }}"</h2>
+
+        <div class="search-results-section">
+            {% if animes %}
+                {{ render_anime_list(animes) }}
+                {% if pagination.pagination %}
+                    {{ render_pagination(pagination) }}
+                {% endif %}
+            {% else %}
+                <p class="no-data">没有找到与 "{{ query }}" 相关的动漫</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{{ url_for('static', filename='js/pages/search.js') }}"></script>
+{% endblock %}

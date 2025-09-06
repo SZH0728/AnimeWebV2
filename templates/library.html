@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_anime_list, render_pagination %}
+
+{% block title %}AnimeScrapy - 动漫库{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/library.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="anime-library-page">
+        <section class="filter-section">
+            <form class="filter-form" method="GET" data-page="library">
+                <div class="filter-group">
+                    <label for="year">年份:</label>
+                    <select name="year" id="year">
+                        <option value="">全部</option>
+                        {% for year in range(2025, 2019, -1) %}
+                            <option value="{{ year }}"
+                                    {% if library_args.year == year %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="season">季度:</label>
+                    <select name="season" id="season">
+                        <option value="">全部</option>
+                        <option value="spring" {% if library_args.season == 'spring' %}selected{% endif %}>春</option>
+                        <option value="summer" {% if library_args.season == 'summer' %}selected{% endif %}>夏</option>
+                        <option value="autumn" {% if library_args.season == 'autumn' %}selected{% endif %}>秋</option>
+                        <option value="winter" {% if library_args.season == 'winter' %}selected{% endif %}>冬</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="min_vote">最低投票数:</label>
+                    <input type="number" name="min_vote" id="min_vote" min="0" value="{{ library_args.vote }}"
+                           placeholder="请输入最低投票数">
+                </div>
+
+                <button type="submit" class="filter-button">筛选</button>
+            </form>
+        </section>
+
+        <section class="anime-list-section">
+            {% if animes %}
+                {{ render_anime_list(animes) }}
+                {% if pagination.pagination %}
+                    {{ render_pagination(pagination) }}
+                {% endif %}
+            {% else %}
+                <p class="no-data">没有找到符合条件的动漫</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{{ url_for('static', filename='js/pages/library.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AnimeScrapy{% endblock %}</title>
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <!-- 页面样式插槽 -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header class="main-header">
+    <div class="container">
+        <h1 class="site-title">AnimeScrapy</h1>
+        <a href="https://github.com/SZH0728/AnimeWebV2" target="_blank" class="github-link" rel="noopener">GitHub</a>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<!-- 全局脚本 -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- 页面脚本插槽 -->
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,65 @@
+{# 宏：展示动漫卡片列表 #}
+{% macro render_anime_list(anime_list) %}
+    <div class="anime-list" data-role="anime-list">
+        {% for anime in anime_list %}
+            <a class="anime-card" href="//{{ anime.url }}" target="_blank" rel="noopener" data-role="anime-card">
+                <div class="anime-info">
+                    <div class="anime-header">
+                        <h3 class="anime-title">{{ anime.name }}</h3>
+                        <div class="anime-score" aria-label="评分">
+                            <span class="score-value">{{ anime.score }}</span>
+                            <span class="score-votes">({{ anime.vote }} votes)</span>
+                        </div>
+                    </div>
+
+                    {% if anime.translation %}
+                        <p class="anime-translation">{{ anime.translation }}</p>
+                    {% endif %}
+
+                    <p class="anime-description">
+                        <span class="description-mobile">
+                            {{ anime.description[:100] }}{% if anime.description|length > 100 %}...{% endif %}
+                        </span>
+                        <span class="description-desktop">
+                            {{ anime.description[:300] }}{% if anime.description|length > 300 %}...{% endif %}
+                        </span>
+                    </p>
+                </div>
+                <div class="anime-image">
+                    <img src="{{ anime.picture }}" alt="{{ anime.name }}">
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{# 宏：处理分页选择 #}
+{% macro render_pagination(pagination) %}
+    <nav class="pagination" aria-label="分页导航">
+        {% if pagination.pagination %}
+            {% set page_numbers = pagination.pagination.keys() | map('int') | sort %}
+            {% set first_page = page_numbers | first %}
+            {% set last_page = page_numbers | last %}
+
+            {% if pagination.current > first_page %}
+                <a href="{{ pagination.pagination[first_page|int] }}" class="pagination-link first-page">首页</a>
+            {% endif %}
+
+            {% for page in page_numbers %}
+                {% if page == pagination.current %}
+                    <span class="pagination-current" aria-current="page">{{ page }}</span>
+                {% elif page - pagination.current in [-2, -1, 1, 2] or page in [first_page, last_page] %}
+                    <a href="{{ pagination.pagination[page|int] }}" class="pagination-link">{{ page }}</a>
+                {% elif page - pagination.current == -3 and pagination.current > first_page + 3 %}
+                    <span class="pagination-ellipsis" aria-hidden="true">...</span>
+                {% elif page - pagination.current == 3 and pagination.current < last_page - 3 %}
+                    <span class="pagination-ellipsis" aria-hidden="true">...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.current < last_page %}
+                <a href="{{ pagination.pagination[last_page|int] }}" class="pagination-link last-page">尾页</a>
+            {% endif %}
+        {% endif %}
+    </nav>
+{% endmacro %}
