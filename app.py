@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-from datetime import timedelta
-
 from flask import Flask, request, url_for, abort
 from flask import send_from_directory, render_template
 from flask_limiter import Limiter
