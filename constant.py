@@ -18,7 +18,7 @@ PORT = set_constant('PORT', '3306')
 
 DB_URI: str = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/anime'
 
-ENABLE_INNER_PICTURE: str = set_constant('ENABLE_INNER_PICTURE', 'true')
+ENABLE_INNER_PICTURE: str = set_constant('ENABLE_INNER_PICTURE', 'false')
 if ENABLE_INNER_PICTURE.lower() == 'true':
     ENABLE_INNER_PICTURE: bool = True
 elif ENABLE_INNER_PICTURE.lower() == 'false':
