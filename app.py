@@ -53,7 +53,7 @@ def index():
 @app.route('/library')
 @app.route('/library/<year>/<season>/<int:vote>')
 @limiter.limit('30/minute; 2000/day')
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, query_string=True)
 def library(year: str = None, season: str = None, vote: int = 0):
     # 归一化参数
     if year and year.lower() == 'all':
