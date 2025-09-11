@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
+from constant import SERVER_PORT
+
 # 是否开启debug模式
 debug = False
 
@@ -8,7 +10,7 @@ debug = False
 worker_class = "gevent"
 
 # 访问地址
-bind = "0.0.0.0:80"
+bind = f"0.0.0.0:{SERVER_PORT}"
 
 # 工作进程数，设置为CPU核心数
 workers = 1

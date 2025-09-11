@@ -28,6 +28,8 @@ else:
 
 PICTURE_PATH: str = set_constant('PICTURE_PATH', 'picture')
 
+SERVER_PORT: int = set_constant('SERVER_PORT', 80)
+
 
 if __name__ == '__main__':
     pass
