@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
+from datetime import datetime
+
 from flask import Flask, request, url_for, abort
-from flask import send_from_directory, render_template
+from flask import send_from_directory, send_file, render_template
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_caching import Cache
@@ -51,6 +53,23 @@ def index():
 
 
 @app.route('/library')
+def library_default():
+    time_object: datetime = datetime.now()
+    year: int = time_object.year
+
+    season: str = 'all'
+    if 1 < time_object.month < 4:
+        season = 'winter'
+    elif 4 <= time_object.month < 7:
+        season = 'spring'
+    elif 7 <= time_object.month < 10:
+        season = 'summer'
+    elif 10 <= time_object.month < 12:
+        season = 'autumn'
+
+    return library(str(year), season)
+
+
 @app.route('/library/<year>/<season>/<int:vote>')
 @limiter.limit('30/minute; 2000/day')
 @cache.cached(timeout=60, query_string=True)
@@ -134,6 +153,11 @@ def picture(pid: int):
         abort(404)
 
     return send_from_directory(PICTURE_PATH, str(pid) + '.jpg')
+
+
+@app.route('/robots.txt')
+def robot():
+    return send_file('static/robots.txt')
 
 
 if __name__ == '__main__':
