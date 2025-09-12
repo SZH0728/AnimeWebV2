@@ -15,7 +15,7 @@
                     <label for="year">年份:</label>
                     <select name="year" id="year">
                         <option value="">全部</option>
-                        {% for year in range(2025, 2019, -1) %}
+                        {% for year in range(2030, 2024, -1) %}
                             <option value="{{ year }}"
                                     {% if library_args.year == year %}selected{% endif %}>{{ year }}</option>
                         {% endfor %}

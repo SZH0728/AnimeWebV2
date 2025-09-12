@@ -2,7 +2,7 @@
 {% macro render_anime_list(anime_list) %}
     <div class="anime-list" data-role="anime-list">
         {% for anime in anime_list %}
-            <a class="anime-card" href="//{{ anime.url }}" target="_blank" rel="noopener" data-role="anime-card">
+            <a class="anime-card" href="{{ anime.url }}" rel="noopener" data-role="anime-card">
                 <div class="anime-info">
                     <div class="anime-header">
                         <h3 class="anime-title">{{ anime.name }}</h3>
