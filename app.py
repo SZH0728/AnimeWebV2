@@ -6,13 +6,12 @@ from datetime import datetime
 from flask import Flask, request, url_for, abort
 from flask import send_from_directory, send_file, render_template
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from flask_caching import Cache
 
 from constant import DB_URI, ENABLE_INNER_PICTURE, PICTURE_PATH
-from model import DB, Score
+from model import DB, Score, Web
 from data import LibraryArgs
-from service import QueryService, PaginationService
+from service import QueryService, PaginationService, WebIDMap
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
@@ -23,7 +22,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 
 DB.init_app(app)
-
 
 def get_real_user_ip():
     if request.headers.get('X-Forwarded-For'):
@@ -36,6 +34,11 @@ def get_real_user_ip():
 
 limiter = Limiter(get_real_user_ip, app=app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple', 'CACHE_THRESHOLD': 16})
+
+
+@cache.memoize(timeout=300)
+def get_web_id_map() -> WebIDMap:
+    return WebIDMap(Web.query.all())
 
 
 @app.route('/')
@@ -161,10 +164,25 @@ def search():
     )
 
 
-@app.route('/detail/<int: aid>')
+@app.route('/detail/<int:aid>')
 @cache.cached(timeout=60)
 def detail(aid: int):
-    abort(404)
+    # 使用QueryService进行基础三表联查
+    query = QueryService.base_query()
+    query = QueryService.apply_filters(query, aid=aid)
+    result = query.first()
+
+    # 如果找不到结果，返回404
+    if not result:
+        abort(404)
+
+    detail_obj, score_obj, web_obj = result
+    web_map = get_web_id_map()
+
+    # 使用QueryService将结果转换为DetailInfo对象
+    detail_info = QueryService.to_detail_object(detail_obj, score_obj, web_obj, web_map)
+
+    return render_template('detail.html', detail=detail_info)
 
 
 @app.route('/picture/<int:pid>')
@@ -173,6 +191,56 @@ def picture(pid: int):
         abort(404)
 
     return send_from_directory(PICTURE_PATH, str(pid) + '.jpg')
+
+
+@app.errorhandler(400)
+def handle_400(error):
+    return render_template('error.html', code=400), 400
+
+
+@app.errorhandler(401)
+def handle_401(error):
+    return render_template('error.html', code=401), 401
+
+
+@app.errorhandler(403)
+def handle_403(error):
+    return render_template('error.html', code=403), 403
+
+
+@app.errorhandler(404)
+def handle_404(error):
+    return render_template('error.html', code=404), 404
+
+
+@app.errorhandler(408)
+def handle_408(error):
+    return render_template('error.html', code=408), 408
+
+
+@app.errorhandler(429)
+def handle_429(error):
+    return render_template('error.html', code=429), 429
+
+
+@app.errorhandler(500)
+def handle_500(error):
+    return render_template('error.html', code=500), 500
+
+
+@app.errorhandler(502)
+def handle_502(error):
+    return render_template('error.html', code=502), 502
+
+
+@app.errorhandler(503)
+def handle_503(error):
+    return render_template('error.html', code=503), 503
+
+
+@app.errorhandler(504)
+def handle_504(error):
+    return render_template('error.html', code=504), 504
 
 
 @app.route('/robots.txt')

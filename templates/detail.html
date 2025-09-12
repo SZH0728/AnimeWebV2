@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}AnimeScrapy - 详情{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/detail.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="detail-page container">
+    <div class="detail-content">
+        <!-- 图片区域（桌面端左侧 / 移动端上方） -->
+        <div class="anime-image">
+            {% if detail.picture %}
+                <img src="{{ detail.picture }}" alt="{{ detail.name }}">
+            {% else %}
+                <img src="" alt="{{ detail.name }}" style="display:none;">
+            {% endif %}
+        </div>
+
+        <!-- 信息区域（桌面端右侧 / 移动端下方） -->
+        <div class="anime-info">
+            <div class="anime-header">
+                <h1 class="anime-title">{{ detail.name }}</h1>
+                <p class="anime-score">
+                    <span class="score-value">{{ '%.2f' % detail.score }}</span>
+                    <span class="score-votes">({{ detail.vote }} votes)</span>
+                </p>
+            </div>
+
+            {% if detail.translation %}
+            <div class="anime-translation">{{ detail.translation }}</div>
+            {% endif %}
+
+            {% if detail.all %}
+            <div class="meta-line">
+                别名：
+                <span>{{ detail.all | join(' / ') }}</span>
+            </div>
+            {% endif %}
+
+            {% if detail.time %}
+            <div class="meta-line">发布日期：{{ detail.time.strftime('%Y-%m-%d') }}</div>
+            {% endif %}
+
+            {% if detail.tag %}
+            <div class="meta-line">
+                标签：
+                <span class="tags">
+                    {% for t in detail.tag %}
+                    <span class="tag">{{ t }}</span>
+                    {% endfor %}
+                </span>
+            </div>
+            {% endif %}
+
+            {% if detail.description %}
+            <div class="anime-description">
+                {{ detail.description }}
+            </div>
+            {% endif %}
+
+            {% if detail.detail_score %}
+            <div class="meta-line" style="margin-top:8px;">评分明细：</div>
+            <div class="score-table">
+                <div class="th">平台</div>
+                <div class="th">评分</div>
+                <div class="th">投票</div>
+                {% for platform, sv in detail.detail_score.items() %}
+                    <div class="td">{{ platform }}</div>
+                    <div class="td">
+                        {% if 'score' in sv %}
+                            {{ '%.2f' % sv['score'] }}
+                        {% elif sv[0] is defined %}
+                            {{ '%.2f' % sv[0] }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
+                    <div class="td">
+                        {% if 'vote' in sv %}
+                            {{ sv['vote'] }}
+                        {% elif sv[1] is defined %}
+                            {{ sv[1] }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="actions">
+                {% if detail.url %}
+                    <a class="btn" href="{{ detail.url }}" target="_blank" rel="noopener noreferrer">前往相关网站</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

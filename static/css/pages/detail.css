@@ -1,0 +1,143 @@
+.detail-page .detail-content {
+    display: flex;
+    gap: 0;
+}
+
+.detail-page .anime-image {
+    width: 320px;
+    background-color: #f0f7ff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.detail-page .anime-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.detail-page .anime-info {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 标题与译名 */
+.detail-page .anime-title {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.detail-page .anime-translation {
+    color: var(--light-text);
+    font-style: italic;
+}
+
+/* 元信息行 */
+.detail-page .meta-line {
+    color: var(--light-text);
+}
+
+.detail-page .tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+}
+
+.detail-page .tag {
+    padding: 2px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--light-text);
+    background: #fff;
+}
+
+/* 评分区域 */
+.detail-page .anime-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.detail-page .score-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.detail-page .score-votes {
+    color: var(--light-text);
+}
+
+/* 评分明细表（文本栅格） */
+.detail-page .score-table {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px 12px;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 0.95rem;
+}
+
+.detail-page .score-table .th {
+    color: var(--light-text);
+    font-weight: 600;
+}
+
+.detail-page .score-table .td {
+    color: var(--text-color);
+}
+
+/* 外链按钮：复用按钮风格（与 error.css 一致） */
+.detail-page .actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.detail-page .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    background: #fff;
+}
+
+.detail-page .btn:hover {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* 响应式：移动端图片在上、介绍在下 */
+@media (max-width: 768px) {
+    .detail-page .detail-content {
+        flex-direction: column;
+    }
+    .detail-page .anime-image {
+        width: 100%;
+        height: auto;
+    }
+    .detail-page .anime-info {
+        padding: 16px;
+    }
+    .detail-page .anime-title {
+        font-size: 1.3rem;
+    }
+    .detail-page .score-value {
+        font-size: 1.1rem;
+    }
+}
