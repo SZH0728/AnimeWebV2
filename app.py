@@ -24,7 +24,17 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 
 DB.init_app(app)
 
-limiter = Limiter(get_remote_address, app=app)
+
+def get_real_user_ip():
+    if request.headers.get('X-Forwarded-For'):
+        # X-Forwarded-For 可能包含多个 IP，第一个是真实客户端 IP
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    else:
+        return request.remote_addr
+
+limiter = Limiter(get_real_user_ip, app=app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple', 'CACHE_THRESHOLD': 16})
 
 
@@ -53,6 +63,8 @@ def index():
 
 
 @app.route('/library')
+@limiter.limit('30/minute; 2000/day')
+@cache.cached(timeout=60)
 def library_default():
     time_object: datetime = datetime.now()
     year: int = time_object.year
@@ -121,6 +133,7 @@ def library(year: str = None, season: str = None, vote: int = 0):
 
 @app.route('/search')
 @limiter.limit('3/second; 20/minute; 2000/day')
+@cache.cached(timeout=60, query_string=True)
 def search():
     keyword: str = request.args.get('keyword', '').strip()
     page: int = request.args.get('page', 1, type=int)
@@ -146,6 +159,13 @@ def search():
         animes=anime,
         pagination=pagination
     )
+
+
+@app.route('/detail/<int: aid>')
+@cache.cached(timeout=60)
+def detail(aid: int):
+    abort(404)
+
 
 @app.route('/picture/<int:pid>')
 def picture(pid: int):
