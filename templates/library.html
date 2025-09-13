@@ -2,6 +2,8 @@
 {% from "macros.html" import render_anime_list, render_pagination %}
 
 {% block title %}AnimeScrapy - 动漫库{% endblock %}
+{% block description %}动漫库：按年份、季度（春/夏/秋/冬）与最低投票数筛选动漫，支持分页浏览与快速定位高分高票作品。{% endblock %}
+{% block keywords %}动漫库, 年份筛选, 季度筛选, 春季番, 夏季番, 秋季番, 冬季番, 最低投票数, 动漫筛选, 动漫分页{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/library.css') }}">

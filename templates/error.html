@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}AnimeScrapy - 错误 {{ code or 500 }}{% endblock %}
+{% block description %}错误 {{ code or 500 }}：{{ message or '' }} 请根据提示操作，可返回首页或回到上一页重试。{% endblock %}
+{% block keywords %}错误页, {{ code or 500 }}, 404, 500, 请求无效, 未授权, 禁止访问, 超时, 频繁请求, 服务器错误{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/error.css') }}">

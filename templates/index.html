@@ -2,6 +2,8 @@
 {% from "macros.html" import render_anime_list %}
 
 {% block title %}AnimeScrapy - 首页{% endblock %}
+{% block description %}AnimeScrapy 首页：展示当日热门动漫，浏览评分与简介。{% endblock %}
+{% block keywords %}热门动漫, 今日热门, 动漫搜索, 动漫推荐, 动漫评分, 动漫简介, AnimeScrapy{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/index.css') }}">

@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+
 {% block title %}AnimeScrapy - 详情{% endblock %}
+{% block description %}{{ detail.name }}：评分{{ '%.2f' % detail.score }}（{{ detail.vote }}票）。查看译名/别名、发布日期、标签、剧情简介与各平台评分明细，支持跳转相关网站。{% endblock %}
+{% block keywords %}{{ detail.name }}, 动漫详情, 动漫评分, 投票, 别名, 发布日期, 标签, 简介, 平台评分, 外部链接{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/detail.css') }}">

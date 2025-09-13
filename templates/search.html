@@ -2,6 +2,8 @@
 {% from "macros.html" import render_anime_list, render_pagination %}
 
 {% block title %}AnimeScrapy - 搜索结果{% endblock %}
+{% block description %}搜索“{{ query }}”的动漫结果：浏览匹配的作品、评分、投票与简介，支持分页与快速定位目标条目。{% endblock %}
+{% block keywords %}动漫搜索, 搜索结果, 关键词搜索, 动漫评分, 动漫投票, 动漫简介, 分页搜索, {{ query }}{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/search.css') }}">
