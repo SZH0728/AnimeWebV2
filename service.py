@@ -11,7 +11,7 @@ from typing import Iterable
 
 from sqlalchemy import desc, and_
 
-from model import DB, Detail, Score, Web
+from model import DB, Detail, Score, Web, NameMap
 from constant import ENABLE_INNER_PICTURE
 from data import BriefInfo, DetailInfo, Pagination
 
@@ -118,7 +118,10 @@ class QueryService(object):
             filters.append(Score.date == on_date)
 
         if keyword:
-            filters.append(DB.func.json_search(Detail.all, 'one', f'%{keyword}%').is_not(None))
+            name_map_query = DB.session.query(NameMap.detailId).filter(
+                NameMap.name.like(f'%{keyword}%')
+            )
+            filters.append(Detail.id.in_(name_map_query))
 
         if filters:
             query = query.filter(and_(*filters))
@@ -195,21 +198,21 @@ class QueryService(object):
         return result
 
     @staticmethod
-    def to_detail_object(detail: Detail, score: Score, web: Web, map: WebIDMap) -> DetailInfo:
+    def to_detail_object(detail: Detail, score: Score, web: Web, web_id_map: WebIDMap) -> DetailInfo:
         """
         @brief 将Detail、Score、Web三个对象转换为DetailInfo对象
         @details 将数据库中的Detail、Score、Web三个实体对象整合转换为前端使用的DetailInfo对象
         @param detail Detail对象，包含动漫详细信息
         @param score Score对象，包含评分相关信息
         @param web Web对象，包含网站信息
-        @param map WebIDMap对象，用于将Web ID转换为名称
+        @param web_id_map WebIDMap对象，用于将Web ID转换为名称
         @return 整合后的DetailInfo对象
         """
         picture = QueryService.set_picture_url(detail)
 
         detail_score: dict[str, dict[str, int | float]] = {}
         for key,value in score.detailScore.items():
-            detail_score[map.get_name_by_id(key)] = value
+            detail_score[web_id_map.get_name_by_id(key)] = value
 
         info = DetailInfo(
             id=detail.id,

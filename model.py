@@ -48,6 +48,12 @@ class Score(DB.Model):
 
     date = DB.Column(DB.Date)  # 评分日期
 
+    __table_args__ = (
+        DB.Index('idx_score_detail_date', 'detailId', 'date'),
+        DB.Index('idx_score_date', 'date'),
+        DB.Index('idx_score_rank', 'score', 'vote'),
+    )
+
 
 class Web(DB.Model):
     __tablename__ = 'web'
@@ -60,6 +66,18 @@ class Web(DB.Model):
     format = DB.Column(DB.String(16))  # 网站URL格式
 
     priority = DB.Column(TINYINT)  # 网站优先级
+
+
+class NameMap(Base):
+    __tablename__ = 'name_map'
+
+    id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)  # 主键ID，自增
+    name = DB.Column(DB.String(64), nullable=False, unique=True)  # 动画名称，唯一
+    detailId = DB.Column(DB.Integer, nullable=False)  # 关联的Detail表ID
+
+    __table_args__ = (
+        DB.Index('index_name', 'name'),
+    )
 
 
 class Cache(DB.Model):
