@@ -16,39 +16,37 @@
             <div class="error-code">{{ code }}</div>
 
             <div class="error-title">
-                {% if message %}
-                    {{ message }}
-                {% else %}
-                    {% if code == 400 %}请求无效
-                    {% elif code == 401 %}未授权访问
-                    {% elif code == 403 %}禁止访问
-                    {% elif code == 404 %}页面未找到
-                    {% elif code == 408 %}请求超时
-                    {% elif code == 429 %}请求过于频繁
-                    {% elif code == 500 %}服务器内部错误
-                    {% elif code == 502 %}网关错误
-                    {% elif code == 503 %}服务不可用
-                    {% elif code == 504 %}网关超时
-                    {% else %}发生了一个错误
-                    {% endif %}
+                {% if code == 400 %}请求无效
+                {% elif code == 401 %}未授权访问
+                {% elif code == 403 %}禁止访问
+                {% elif code == 404 %}页面未找到
+                {% elif code == 408 %}请求超时
+                {% elif code == 429 %}请求过于频繁
+                {% elif code == 500 %}服务器内部错误
+                {% elif code == 502 %}网关错误
+                {% elif code == 503 %}服务不可用
+                {% elif code == 504 %}网关超时
+                {% else %}发生了一个错误
                 {% endif %}
             </div>
         </div>
 
         <div class="error-message">
-                {% if code in [403] %}
-                    你没有访问该资源的权限。
-                {% elif code in [404] %}
-                    抱歉，你访问的页面不存在或已被移动。
-                {% elif code in [500, 502, 503, 504] %}
-                    服务器遇到问题，请稍后再试。
-                {% elif code == 401 %}
-                    请先登录后再尝试访问该页面。
-                {% elif code == 429 %}
-                    当前请求过多，请稍等片刻再试。
-                {% else %}
-                    请刷新页面或稍后重试。
-                {% endif %}
+            {% if message %}
+                {{ message }}
+            {% elif code in [403] %}
+                你没有访问该资源的权限。
+            {% elif code in [404] %}
+                抱歉，你访问的页面不存在或已被移动。
+            {% elif code in [500, 502, 503, 504] %}
+                服务器遇到问题，请稍后再试。
+            {% elif code == 401 %}
+                请先登录后再尝试访问该页面。
+            {% elif code == 429 %}
+                当前请求过多，请稍等片刻再试。
+            {% else %}
+                请刷新页面或稍后重试。
+            {% endif %}
         </div>
 
         <div class="error-actions">

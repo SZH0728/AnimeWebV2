@@ -195,52 +195,52 @@ def picture(pid: int):
 
 @app.errorhandler(400)
 def handle_400(error):
-    return render_template('error.html', code=400), 400
+    return render_template('error.html', code=400, message=error.description), 400
 
 
 @app.errorhandler(401)
 def handle_401(error):
-    return render_template('error.html', code=401), 401
+    return render_template('error.html', code=401, message=error.description), 401
 
 
 @app.errorhandler(403)
 def handle_403(error):
-    return render_template('error.html', code=403), 403
+    return render_template('error.html', code=403, message=error.description), 403
 
 
 @app.errorhandler(404)
 def handle_404(error):
-    return render_template('error.html', code=404), 404
+    return render_template('error.html', code=404, message=error.description), 404
 
 
 @app.errorhandler(408)
 def handle_408(error):
-    return render_template('error.html', code=408), 408
+    return render_template('error.html', code=408, message=error.description), 408
 
 
 @app.errorhandler(429)
 def handle_429(error):
-    return render_template('error.html', code=429), 429
+    return render_template('error.html', code=429, message=error.description), 429
 
 
 @app.errorhandler(500)
 def handle_500(error):
-    return render_template('error.html', code=500), 500
+    return render_template('error.html', code=500, message=error.description), 500
 
 
 @app.errorhandler(502)
 def handle_502(error):
-    return render_template('error.html', code=502), 502
+    return render_template('error.html', code=502, message=error.description), 502
 
 
 @app.errorhandler(503)
 def handle_503(error):
-    return render_template('error.html', code=503), 503
+    return render_template('error.html', code=503, message=error.description), 503
 
 
 @app.errorhandler(504)
 def handle_504(error):
-    return render_template('error.html', code=504), 504
+    return render_template('error.html', code=504, message=error.description), 504
 
 
 @app.route('/robots.txt')
