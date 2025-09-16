@@ -208,11 +208,11 @@ def detail(aid: int):
     return render_template('detail.html', detail=detail_info, score_list=score_list)
 
 
-@app.route('/score/<int:aid>/<date:int>')
-def score(aid: int, date: int=30):
+@app.route('/score/<int:aid>/<int:delay>')
+def score(aid: int, delay: int=30):
     abort(404)
 
-    if date > 120:
+    if delay > 120:
         abort(400, description='Invalid date parameter')
 
     # 获取评分列表
