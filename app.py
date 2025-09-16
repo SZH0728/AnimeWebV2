@@ -198,7 +198,7 @@ def detail(aid: int):
     detail_info = QueryService.to_detail_object(detail_obj, score_obj, web_obj, web_map)
 
     query = ScoreListService.base_query(aid)
-    query = ScoreListService.from_delay_days(query, aid, 30)
+    query = ScoreListService.from_delay_days(query, aid, 7)
     query = ScoreListService.order_by_date_desc(query)
 
     # 转换为ScoreList对象
