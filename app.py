@@ -208,13 +208,16 @@ def detail(aid: int):
     return render_template('detail.html', detail=detail_info, score_list=score_list)
 
 
-@app.route('/score/<int:aid>')
-def score(aid: int):
+@app.route('/score/<int:aid>/<date:int>')
+def score(aid: int, date: int=30):
     abort(404)
+
+    if date > 120:
+        abort(400, description='Invalid date parameter')
 
     # 获取评分列表
     query = ScoreListService.base_query(aid)
-    query = ScoreListService.from_delay_days(query, aid, 30)
+    query = ScoreListService.from_delay_days(query, aid, date)
     query = ScoreListService.order_by_date_desc(query)
 
     # 转换为ScoreList对象
