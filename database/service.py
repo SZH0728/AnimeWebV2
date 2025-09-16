@@ -8,12 +8,13 @@
 """
 
 from typing import Iterable
+from datetime import datetime, timedelta
 
 from sqlalchemy import desc, and_
 
-from model import DB, Detail, Score, Web, NameMap
+from database.model import DB, Detail, Score, Web, NameMap
+from database.data import BriefInfo, DetailInfo, ScoreListItem, Pagination
 from constant import ENABLE_INNER_PICTURE
-from data import BriefInfo, DetailInfo, Pagination
 
 
 class WebIDMap(object):
@@ -234,6 +235,84 @@ class QueryService(object):
         )
 
         return info
+
+
+class ScoreListService(object):
+    """
+    @class ScoreListService
+    @brief 评分列表服务类
+    @details 提供根据DetailId查询评分历史记录并按日期排序的功能
+    """
+
+    @staticmethod
+    def base_query(detail_id: int):
+        return (
+            DB.session.query(Score)
+            .filter(Score.detailId == detail_id)
+        )
+
+    @staticmethod
+    def order_by_date_desc(query):
+        """
+        @brief 按日期降序排列
+        @details 对查询结果按Score.date字段进行降序排序
+        @param query 查询对象
+        @return 排序后的查询对象
+        """
+        return query.order_by(desc(Score.date))
+
+    @staticmethod
+    def order_by_date_asc(query):
+        """
+        @brief 按日期升序排列
+        @details 对查询结果按Score.date字段进行升序排序
+        @param query 查询对象
+        @return 排序后的查询对象
+        """
+        return query.order_by(Score.date)
+
+    @staticmethod
+    def from_delay_days(query, detail_id: int, delay: int):
+        """
+        """
+        # 获取最新的日期
+        latest_score = (
+            DB.session.query(Score.date)
+            .filter(Score.detailId == detail_id)
+            .order_by(desc(Score.date))
+            .first()
+        )
+
+        delay_date = latest_score.date - timedelta(days=delay)
+
+        return query.filter(Score.date >= delay_date)
+
+    @staticmethod
+    def to_score_list(query, web_id_map: WebIDMap):
+        """
+        @brief 将查询结果转换为评分列表
+        @details 将查询结果转换为ScoreListItem列表
+        @param query 查询对象
+        @param web_id_map WebIDMap对象，用于将Web ID转换为名称
+        @return ScoreListItem列表
+        """
+        results = query.all()
+
+        score_list: list[ScoreListItem] = []
+        for result in results:
+            detail_score = {}
+            for key, value in result.detailScore.items():
+                detail_score[web_id_map.get_name_by_id(key)] = value
+
+            score_list.append(ScoreListItem(
+                detail_score=detail_score,
+                score=float(result.score) if result.score else None,
+                vote=result.vote,
+                date=result.date
+            ))
+
+        return score_list
+
 
 class PaginationService(object):
     """

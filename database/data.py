@@ -56,6 +56,15 @@ class DetailInfo(object):
     vote: int | None  # 投票人数
 
 
+@dataclass
+class ScoreListItem(object):
+    # 详细评分信息，存储各平台评分和投票人数，示例: {'Bangumi': [8.3, 13284], 'MyAnimeList': [8.73, 1464542]}
+    detail_score: dict[str, dict[str, int | float]] | None
+    score: float | None  # 总评分
+    vote: int | None  # 投票人数
+
+    date: date | None  # 评分日期
+
 
 if __name__ == '__main__':
     pass
