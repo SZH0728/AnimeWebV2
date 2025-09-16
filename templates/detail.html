@@ -100,6 +100,36 @@
         </div>
     </div>
 </div>
+
+<div class="detail-page">
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3 class="chart-title">评分走势</h3>
+      <div class="chart-subtitle">展示总评分与各平台评分随时间的变化</div>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="scoreTrendChart"></canvas>
+    </div>
+    {% if not score_list or score_list|length == 0 %}
+      <div class="no-data">暂无评分走势数据</div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/pages/detail.js') }}"></script>
+<script>
+(() => {
+  // 若无数据则无需初始化图表
+  const hasData = {{ (score_list and score_list|length > 0) | tojson }};
+  if (!hasData) return;
+
+  // 将后端的 ScoreListItem 列表安全序列化到前端
+  const rawList = {{ score_list | tojson }};
+
+  constructChart(rawList);
+})();
+</script>
+{% endblock %}

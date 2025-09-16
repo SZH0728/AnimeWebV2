@@ -141,3 +141,47 @@
         font-size: 1.1rem;
     }
 }
+
+/* 图表卡片容器：复用页面风格 */
+.detail-page .chart-card {
+    margin-top: 20px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    padding: 16px;
+}
+
+.detail-page .chart-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.detail-page .chart-title {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin: 0;
+}
+
+.detail-page .chart-subtitle {
+    color: var(--light-text);
+    font-size: 0.95rem;
+}
+
+/* 让 canvas 在移动端自适应宽度 */
+.detail-page .chart-wrapper {
+    position: relative;
+    width: 100%;
+    /* 高宽比：可按需调整 */
+    aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 768px) {
+    .detail-page .chart-title {
+        font-size: 1rem;
+    }
+}

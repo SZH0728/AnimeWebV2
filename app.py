@@ -4,16 +4,22 @@
 from datetime import datetime
 
 from flask import Flask, request, url_for, abort
-from flask import send_from_directory, send_file, render_template
+from flask import render_template
 from flask_limiter import Limiter
 from flask_caching import Cache
 
-from constant import DB_URI, ENABLE_INNER_PICTURE, PICTURE_PATH
-from model import DB, Score, Web
-from data import LibraryArgs
-from service import QueryService, PaginationService, WebIDMap
+from constant import DB_URI
+from database.model import DB, Score, Web
+from database.data import LibraryArgs
+from database.service import QueryService, ScoreListService, PaginationService, WebIDMap
+
+from route.errors import errors_bp
+from route.file import file_bp
 
 app = Flask(__name__)
+app.register_blueprint(errors_bp)
+app.register_blueprint(file_bp)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -36,9 +42,14 @@ limiter = Limiter(get_real_user_ip, app=app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple', 'CACHE_THRESHOLD': 16})
 
 
-@cache.memoize(timeout=300)
+@cache.memoize(timeout=60*60)
 def get_web_id_map() -> WebIDMap:
     return WebIDMap(Web.query.all())
+
+
+@cache.cached(timeout=5*60)
+def get_latest_date():
+    return DB.session.query(DB.func.max(Score.date)).scalar()
 
 
 @app.route('/')
@@ -49,7 +60,7 @@ def index():
     max_number = 20
 
     # 计算当天的评分日期
-    latest_date = DB.session.query(DB.func.max(Score.date)).scalar()
+    latest_date = get_latest_date()
     if not latest_date:
         # 无评分数据时直接返回空
         return render_template('index.html', hot_animes=[])
@@ -110,7 +121,7 @@ def library(year: str = None, season: str = None, vote: int = 0):
     page: int = request.args.get('page', 1, type=int)
     per_page = 20
 
-    latest_date = DB.session.query(DB.func.max(Score.date)).scalar()
+    latest_date = get_latest_date()
 
     # 构建查询
     query = QueryService.base_query()
@@ -147,7 +158,7 @@ def search():
     if not 2  <= len(keyword) <= 64:
         abort(400, description='Invalid keyword parameter')
 
-    latest_date = DB.session.query(DB.func.max(Score.date)).scalar()
+    latest_date = get_latest_date()
 
     query = QueryService.base_query()
     query = QueryService.apply_filters(query, keyword=keyword, on_date=latest_date)
@@ -186,70 +197,31 @@ def detail(aid: int):
     # 使用QueryService将结果转换为DetailInfo对象
     detail_info = QueryService.to_detail_object(detail_obj, score_obj, web_obj, web_map)
 
-    return render_template('detail.html', detail=detail_info)
+    query = ScoreListService.base_query(aid)
+    query = ScoreListService.from_delay_days(query, aid, 30)
+    query = ScoreListService.order_by_date_desc(query)
+
+    # 转换为ScoreList对象
+    web_map = get_web_id_map()
+    score_list = ScoreListService.to_score_list(query, web_map)
+
+    return render_template('detail.html', detail=detail_info, score_list=score_list)
 
 
-@app.route('/picture/<int:pid>')
-def picture(pid: int):
-    if not ENABLE_INNER_PICTURE:
-        abort(404)
+@app.route('/score/<int:aid>')
+def score(aid: int):
+    abort(404)
 
-    return send_from_directory(PICTURE_PATH, str(pid) + '.jpg')
+    # 获取评分列表
+    query = ScoreListService.base_query(aid)
+    query = ScoreListService.from_delay_days(query, aid, 30)
+    query = ScoreListService.order_by_date_desc(query)
 
+    # 转换为ScoreList对象
+    web_map = get_web_id_map()
+    score_list = ScoreListService.to_score_list(query, web_map)
 
-@app.errorhandler(400)
-def handle_400(error):
-    return render_template('error.html', code=400, message=error.description), 400
-
-
-@app.errorhandler(401)
-def handle_401(error):
-    return render_template('error.html', code=401, message=error.description), 401
-
-
-@app.errorhandler(403)
-def handle_403(error):
-    return render_template('error.html', code=403, message=error.description), 403
-
-
-@app.errorhandler(404)
-def handle_404(error):
-    return render_template('error.html', code=404, message=error.description), 404
-
-
-@app.errorhandler(408)
-def handle_408(error):
-    return render_template('error.html', code=408, message=error.description), 408
-
-
-@app.errorhandler(429)
-def handle_429(error):
-    return render_template('error.html', code=429, message=error.description), 429
-
-
-@app.errorhandler(500)
-def handle_500(error):
-    return render_template('error.html', code=500, message=error.description), 500
-
-
-@app.errorhandler(502)
-def handle_502(error):
-    return render_template('error.html', code=502, message=error.description), 502
-
-
-@app.errorhandler(503)
-def handle_503(error):
-    return render_template('error.html', code=503, message=error.description), 503
-
-
-@app.errorhandler(504)
-def handle_504(error):
-    return render_template('error.html', code=504, message=error.description), 504
-
-
-@app.route('/robots.txt')
-def robot():
-    return send_file('static/robots.txt')
+    return str(score_list)
 
 
 if __name__ == '__main__':
